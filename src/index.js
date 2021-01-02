@@ -1,11 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import reportWebVitals from "./reportWebVitals";
 
 const NoteApp = () => {
-  const [notes, setNotes] = useState([]);
+  const notesData = JSON.parse(localStorage.getItem("notes"));
+  const [notes, setNotes] = useState(notesData || []);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+
+  useEffect(() => {
+    localStorage.setItem("notes", JSON.stringify(notes));
+  });
   const addNote = (e) => {
     e.preventDefault();
     setNotes([
@@ -44,36 +49,43 @@ const NoteApp = () => {
   );
 };
 
-// const App = (props) => {
+const App = (props) => {
+  const [count, setCount] = useState(props.count);
+  // here we showed how we can use useState multiple times to track multiple things.
+  const [text, setText] = useState("");
 
-//   const [count, setCount] = useState(props.count);
-//   // here we showed how we can use useState multiple times to track multiple things.
-//   const [text, setText] = useState("");
+  useEffect(() => {
+    // this function is similar to a combination of componentDidMount() & componentDidUpdate()
+    console.log("useEffect ran");
+    document.title = count;
+  });
 
-//   const increment = () => {
-//     setCount(count + 1);
-//   };
+  const increment = () => {
+    setCount(count + 1);
+  };
 
-//   return (
-//     <div>
-//       <p>
-//         The current {text || "count"} is {count}
-//       </p>
-//       <button onClick={increment}>+1</button>
-//       <button onClick={() => setCount(count - 1)}>-1</button>
-//       <button onClick={() => setCount(0)}>reset</button>
-//       <input value={text} onChange={(e) => setText(e.target.value)} />
-//     </div>
-//   );
-// };
+  return (
+    <div>
+      <p>
+        The current {text || "count"} is {count}
+      </p>
+      <button onClick={increment}>+1</button>
+      <button onClick={() => setCount(count - 1)}>-1</button>
+      <button onClick={() => setCount(0)}>reset</button>
+      <input value={text} onChange={(e) => setText(e.target.value)} />
+    </div>
+  );
+};
 
-// App.defaultProps = {
-//   count: 0,
-// };
+App.defaultProps = {
+  count: 0,
+};
 
-ReactDOM.render(<NoteApp />, document.getElementById("root"));
+ReactDOM.render(<App count={0} />, document.getElementById("root"));
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+// useeffect allows us to do something in functional components that we were not able to do & that is a replacement for lifecycle methods in classbased components
