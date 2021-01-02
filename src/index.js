@@ -36,11 +36,7 @@ const NoteApp = () => {
     <div>
       <h1>Notes</h1>
       {notes.map((note) => (
-        <div key={note.title}>
-          <h3>{note.title}</h3>
-          <p>{note.body}</p>
-          <button onClick={() => removeNote(note.title)}>x</button>
-        </div>
+        <Note key={note.title} note={note} removeNote={removeNote} />
       ))}
       <p>Add note</p>
       <form onSubmit={addNote}>
@@ -55,42 +51,22 @@ const NoteApp = () => {
   );
 };
 
-const App = (props) => {
-  const [count, setCount] = useState(props.count);
-
-  const [text, setText] = useState("");
-  //just like useState we can use useEffect as many times as we want to
+const Note = ({ note, removeNote }) => {
   useEffect(() => {
-    console.log("This should only run once");
-    //this function is gonna run once when the component first mounts but it's never going to run again bc it depends on nothing.
-    //this can be useful if we are fetching or reading data
+    console.log("Setting up effect!");
+    //here we are returning a function from the function we passed to useEffect.So the function below cleans up the effect
+    return () => {
+      console.log("cleaning up effect");
+    };
   }, []);
-
-  useEffect(() => {
-    console.log("useEffect ran");
-    document.title = count;
-    //right now react is doing more work than it needs to be doing and it's because for each letter we enter in input the update will run.The only state we use is count.The useEffect hook allows us to specify the things we care about.The things that we want to make sure when they change the effect runs.This is done via an array as the second argument.So below we are saying only run this effect when the count changes
-  }, [count]);
-
-  const increment = () => {
-    setCount(count + 1);
-  };
 
   return (
     <div>
-      <p>
-        The current {text || "count"} is {count}
-      </p>
-      <button onClick={increment}>+1</button>
-      <button onClick={() => setCount(0)}>reset</button>
-      <button onClick={() => setCount(count - 1)}>-1</button>
-      <input value={text} onChange={(e) => setText(e.target.value)} />
+      <h3>{note.title}</h3>
+      <p>{note.body}</p>
+      <button onClick={() => removeNote(note.title)}>x</button>
     </div>
   );
-};
-
-App.defaultProps = {
-  count: 0,
 };
 
 ReactDOM.render(<NoteApp />, document.getElementById("root"));
@@ -99,3 +75,5 @@ ReactDOM.render(<NoteApp />, document.getElementById("root"));
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+//here we want to use the componentUnmount in useEffect.This would have fired when the component was being unmounted & removed from the screen.We can use useEffect to help us.
