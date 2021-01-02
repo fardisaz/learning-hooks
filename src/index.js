@@ -3,14 +3,20 @@ import ReactDOM from "react-dom";
 import reportWebVitals from "./reportWebVitals";
 
 const NoteApp = () => {
-  const notesData = JSON.parse(localStorage.getItem("notes"));
-  const [notes, setNotes] = useState(notesData || []);
+  // const notesData = JSON.parse(localStorage.getItem("notes"));
+  const [notes, setNotes] = useState([]);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
 
   useEffect(() => {
+    const notesData = JSON.parse(localStorage.getItem("notes"));
+    if (notesData) {
+      setNotes(notesData);
+    }
+  }, []);
+  useEffect(() => {
     localStorage.setItem("notes", JSON.stringify(notes));
-  });
+  }, [notes]);
   const addNote = (e) => {
     e.preventDefault();
     setNotes([
@@ -51,14 +57,20 @@ const NoteApp = () => {
 
 const App = (props) => {
   const [count, setCount] = useState(props.count);
-  // here we showed how we can use useState multiple times to track multiple things.
+
   const [text, setText] = useState("");
+  //just like useState we can use useEffect as many times as we want to
+  useEffect(() => {
+    console.log("This should only run once");
+    //this function is gonna run once when the component first mounts but it's never going to run again bc it depends on nothing.
+    //this can be useful if we are fetching or reading data
+  }, []);
 
   useEffect(() => {
-    // this function is similar to a combination of componentDidMount() & componentDidUpdate()
     console.log("useEffect ran");
     document.title = count;
-  });
+    //right now react is doing more work than it needs to be doing and it's because for each letter we enter in input the update will run.The only state we use is count.The useEffect hook allows us to specify the things we care about.The things that we want to make sure when they change the effect runs.This is done via an array as the second argument.So below we are saying only run this effect when the count changes
+  }, [count]);
 
   const increment = () => {
     setCount(count + 1);
@@ -70,8 +82,8 @@ const App = (props) => {
         The current {text || "count"} is {count}
       </p>
       <button onClick={increment}>+1</button>
-      <button onClick={() => setCount(count - 1)}>-1</button>
       <button onClick={() => setCount(0)}>reset</button>
+      <button onClick={() => setCount(count - 1)}>-1</button>
       <input value={text} onChange={(e) => setText(e.target.value)} />
     </div>
   );
@@ -81,11 +93,9 @@ App.defaultProps = {
   count: 0,
 };
 
-ReactDOM.render(<App count={0} />, document.getElementById("root"));
+ReactDOM.render(<NoteApp />, document.getElementById("root"));
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
-
-// useeffect allows us to do something in functional components that we were not able to do & that is a replacement for lifecycle methods in classbased components
