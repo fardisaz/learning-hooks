@@ -4,6 +4,7 @@ import reportWebVitals from "./reportWebVitals";
 import NoteApp from "./components/NoteApp";
 
 //react context api & useContext hook to manage a more complex hierarchy of components
+//Context provides a way to pass data through the component tree without having to pass props down manually at every level.
 
 ReactDOM.render(<NoteApp />, document.getElementById("root"));
 
