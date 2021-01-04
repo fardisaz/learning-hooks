@@ -13,7 +13,7 @@ const AddNoteForm = () => {
     setBody("");
   };
   return (
-    <div>
+    <>
       <p>Add note</p>
       <form onSubmit={addNote}>
         <input value={title} onChange={(e) => setTitle(e.target.value)}></input>
@@ -23,7 +23,7 @@ const AddNoteForm = () => {
         ></textarea>
         <button>add note</button>
       </form>
-    </div>
+    </>
   );
 };
 export default AddNoteForm;
